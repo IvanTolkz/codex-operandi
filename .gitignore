@@ -1,0 +1,20 @@
+# Sécurité — JAMAIS dans un repo public
+.env
+.env.*
+*.key
+*.pem
+secrets/
+INTERNAL_MAP.md
+.claude/INTERNAL_MAP.md
+
+# OS / éditeur
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Build artifacts
+node_modules/
+dist/
+build/
+*.log
