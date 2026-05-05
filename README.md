@@ -1,165 +1,154 @@
 # Codex Operandi
 
-> A discipline framework for non-technical founders shipping production software with AI coding agents. Forged on Tolkerz between February and May 2026 by Ivan Boole. Public reference: [github.com/IvanTolkz/codex-operandi](https://github.com/IvanTolkz/codex-operandi).
+> A discipline framework for non-technical founders shipping production software with AI coding agents.
 
 ---
 
-## Genesis — Why this Codex exists
+## Why this exists
 
-This Codex was not written by an experienced engineer formalizing best practices. It was written by a **non-technical co-founder learning on the job**, convinced he was building the platform that would change how people interact online around shared physical experiences.
+In 2026, a non-technical founder can ship production-grade software using AI coding agents — Claude Code, Cursor, Copilot, and others. But "shipping" is not the hard part anymore. **Discipline is.**
 
-Precisely because the author has no ten-year engineering background, this Codex exists. Without a senior CTO instinct to catch technical drift in real-time, the system catches it instead — rules, hooks, automated peer review, harness-level gates, and a file architecture that forces every actor (human or AI agent) to respect the invariants.
+An AI agent left without rules will:
 
-The stake: avoid the **technical storm at hard go-to-market**. When a product takes off, bad technical choices do not forgive. Twelve months of accumulated tech debt explode in forty-eight hours. Many startups miss their scaling window at exactly that moment — not for lack of product-market fit, but because the stack does not hold the load.
+- Generate code that compiles but breaks under real load
+- Skip security checks because they slow it down
+- Patch symptoms instead of fixing root causes
+- Create parallel implementations that duplicate the existing system
+- Ship "demo-grade" code that fails the first audit
 
-This Codex is therefore an **insurance policy**. Over-investing in discipline upfront to buy the right to scale later. Not for perfectionism. For survival.
+The Codex Operandi is the playbook that prevents this. It is not a style guide. It is not a checklist. It is the **enforcement layer** that turns an AI agent into a disciplined engineer accountable to your product, your users, and your future team.
 
-The author remains non-technical. The system he built operates as if he were not.
+This framework was forged on Tolkerz between February and May 2026 by Ivan Boole — a non-technical founder who shipped 700+ tests, 80+ Row-Level Security policies, and a production MVP working with Claude Code as primary agent.
 
----
-
-## Manifesto — The 6 criteria
-
-Every artifact in this Codex must satisfy six falsifiable criteria. Not vague best practices — yes/no lenses. Failing one is documented (corrected immediately, or tracked with a falsifiable reactivation trigger).
-
-### 1. Domain-faithful (Métiable)
-
-A function, module, or technical decision is *Domain-faithful* when it respects 100% of the business objective it claims to serve, and when that fidelity is verifiable rather than assumed. The most expensive failure mode in early-stage startups is not the technical bug — it is the technically perfect feature that misses the business goal.
-
-### 2. Evolvable
-
-A system is *evolvable* when one can **add** a feature without triggering regression, and **remove** a module without fear of breaking the rest. Many systems are modifiable but not cleanable. The lasagna syndrome destroys legibility within twelve months. *Evolvable* requires both add and remove tests passing.
-
-### 3. Traceable
-
-An action on the system is *traceable* when, at any moment, one can find **who** did **what**, **when**, and **why**, without depending on a human's memory. Three moments where its absence kills: investor due diligence, production incidents, GDPR or security breaches.
-
-### 4. Scalable
-
-A system is *scalable* when it supports usage growth across multiple orders of magnitude without major refactoring. Tolkerz target: **100,000 concurrent users minimum**. Anticipating scale on day one means eliminating choices that prevent scaling: full-table scans, N+1 queries, in-process state, LIKE pattern search, OFFSET pagination.
-
-### 5. Auditable
-
-A system is *auditable* when its security state can be **proven**, not assumed, by an outside party with read access to the public repo. *Secure* is an assertion. *Auditable* is a verification.
-
-### 6. Team-able
-
-A system is *team-able* when an outside developer with standard stack experience becomes operational in **less than three hours** by reading the code and root documentation files. The today-solo-founder is the five-person team of tomorrow.
-
-### How to evaluate a PR with the 6 criteria
-
-A single failed criterion uncorrected blocks merge. Required CHECKPOINT format covers all six criteria with binary pass/fail and notes if failed.
+It works whether you have one Claude session or multiple agents running in parallel.
 
 ---
 
-## The 40 rules — Quick index
+## The 5 criteria
 
-Rules are stored in `.claude/rules/<N>-<slug>.md` and referenced in `CLAUDE.md`. Every Claude session loads them at start.
+Every artifact produced by an AI agent on your codebase must satisfy these five falsifiable criteria. If even one fails, the artifact is rejected — no exceptions.
 
-| # | Slug | One-line summary |
-|---|------|------------------|
-| 01 | config-context | Never hardcode business types — use useConfig() |
-| 02 | permissions | Never read user.role directly — use hasPermission() |
-| 03 | soft-delete | Never raw delete — use lifecycle service |
-| 04 | id-system | Stable prefixed IDs (usr_, tlk_, etc.) |
-| 05 | pages-config | pages.config.js is auto-generated |
-| 07 | style-conventions | shadcn/ui + Tailwind + lucide-react |
-| 10 | cto-discipline | Never affirm without verifying |
-| 13 | scale-mindset | Always think 100k+ users |
-| 14 | prise-en-main | Read state at session start; update every 30 min |
-| 15 | audits-auto | Daily security/architecture audits via hooks |
-| 16 | skills-obligatoires | Always invoke domain skills |
-| 17 | browser-use | Use /browse after every deploy |
-| 18 | internal-map | Confidential — never expose URLs |
-| 19 | never-delete-to-fix | Restore and reinforce — never delete tests |
-| 20 | five-circles | STOP, RESEARCH, GRID, TRIBUNAL, AUTOMATION |
-| 21 | branch-automatisation | Always branch + PR — never push direct main |
-| 22 | check-before-modify | Read recent commits before any modification |
-| 23 | typescript-enforcement | All new files in src/ are TypeScript |
-| 24 | supabase-client-side | SDK frontend = Auth + Realtime only |
-| 25 | events-via-emit-event | State changes via emit_event() |
-| 26 | rls-vs-admin-client | RLS for user data, admin only after is_staff |
-| 27 | anti-soap-code | 10-criterion grid + CodeGod /70 review |
-| 28 | caveman-mode-security | Security rules absolute even in fast mode |
-| 29 | agent-directive-absolue | Never patch — fix at source |
-| 30 | speed-contract | Public data without authLoading wait |
-| 31 | uuid-not-email | UUID for references — email only for Auth |
-| 32 | gstack-policy | Skills whitelist/blacklist enforced |
-| 33 | railway-tooling-policy | Railway MCP read-only diagnostic |
-| 34 | tech-debt-tracking | Every deferred decision tracked |
-| 35 | peer-review-cross-agent | Author to reviewer matrix fixed |
-| 36 | gates-enforcement | Gate 1 (cercles) + Gate 2 (PR review) |
-| 37 | no-parallel-implementations | Refactor in place — never duplicate |
-| 38 | test-worktree-hygiene | vitest no-file-parallelism + branch verify |
-| 39 | pnpm-only | npm/yarn forbidden — pnpm via Corepack |
-| 40 | synchro-work-coordination | /synchro claim at session start |
+### 1. Evolvable
 
----
+The artifact must remain modifiable without rewriting. Code, documentation, and configuration that lock the team into a single path are forbidden.
 
-## Multi-agent coordination — The synchro-work primitive
+**How to evaluate** — Can a future contributor change this without touching three other files? Are there hardcoded values that should be configuration? Is there parallel implementation drift?
 
-When multiple agents (humans, Claude Code instances, Cowork sessions) operate on the same repo simultaneously, a lightweight coordination mechanism is mandatory to prevent silent overwrite.
+**Anti-patterns** — Magic numbers, copy-paste duplication, parallel-build (creating `auth_v2.tsx` next to `auth.tsx` instead of refactoring), tight coupling to a vendor or library that cannot be swapped.
 
-The Codex retains a **minimum viable mechanism**: a markdown file (`docs/synchro-work.md`) versioned in git as the active sessions journal. Agents declare scope at session start, upgrade to PR-ready when opening a pull request, and detect conflicts by scope intersection before they become costly.
+### 2. Traceable
 
-V1 ambitious design (locks, heartbeat, ML, dashboard) was rejected by senior CTO critique as cargo-cult distributed-systems theater. V2 minimum viable retained.
+Every change must be explainable from the commit log alone. The "why" of a decision must survive the agent that made it.
+
+**How to evaluate** — Can a new contributor understand why this exists from `git log` and the linked issue or PR alone? Are decisions logged when made, or buried in chat history?
+
+**Anti-patterns** — Drive-by commits with vague messages, undocumented architectural pivots, deferred decisions without trigger conditions in a tech-debt registry.
+
+### 3. Scalable
+
+The artifact must hold under realistic load — not the load of a demo. For Tolkerz, the bar is 100,000 users, 1,000 requests per second, 10,000 active rows in the largest tables.
+
+**How to evaluate** — Does the query use an index? Is pagination cursor-based? Is the cache strategy explicit? Is state externalized (Redis, DB) or kept in process memory? Are N+1 queries forbidden?
+
+**Anti-patterns** — `LIKE '%x%'` for search at scale, `offset/limit` on large tables, in-process state that breaks under multi-instance deployment, missing rate limits.
+
+### 4. Auditable
+
+Every action that touches user data or security boundaries must be reviewable after the fact. An auditor must be able to reconstruct what happened, by whom, and to what data.
+
+**How to evaluate** — Are there logs at the boundaries (auth, payments, deletion, escalation)? Are sensitive operations gated by explicit checks? Is there a clear separation between public, user, and admin code paths?
+
+**Anti-patterns** — Silent error handlers (`except: pass`), admin-level database clients used in user-facing endpoints, production data in test fixtures, missing rate limits on sensitive operations.
+
+### 5. Team-able
+
+The artifact must remain workable by a team that did not write it. This is the criterion that prevents "founder-only" code — software only the original author can maintain.
+
+**How to evaluate** — Can a new engineer onboard without an oral tradition? Are conventions discoverable from the repo alone? Does the codebase have its own documentation, or only the founder's memory?
+
+**Anti-patterns** — Cryptic naming (`tmp`, `data1`, `x`), undocumented business logic, "ask the founder" as the only escalation path, configuration spread across env vars, code, and chat messages.
 
 ---
 
-## Core skills
+## How to enforce — the 5 cercles
 
-| Skill | Trigger | Effect |
-|-------|---------|--------|
-| /preflight | Before any heavy edit | Verifies clean worktree, no zombie vitest, correct branch |
-| /refactor-wave | File > 800 LOC | Codifies the V5 to V16 pattern |
-| /peer-review-checkpoint | Before merge | Generates structured CHECKPOINT |
-| /synchro | Session start, PR open | Multi-agent coordination |
-| /insights-review | Every 14 days | Reviews /insights report, proposes updates |
+Discipline is not enforced by goodwill. It is enforced by a deterministic process applied before every action:
 
----
+1. **STOP** — Does this problem actually exist? Read the code, read the recent commits, read the docs. The AI is biased toward agreeing the problem exists. Verify it yourself.
 
-## Process discipline summary
+2. **RESEARCH** — How do experts solve this? Industry patterns, official documentation, real benchmarks. Never ask the AI for an opinion. Give it jurisprudence.
 
-### The 5 cercles (rule 20)
+3. **GRID** — Define falsifiable criteria. Each criterion is binary — PASS or FAIL. No "should be fine," no "probably works."
 
-1. STOP — does the problem really exist?
-2. RESEARCH — how do experts solve this?
-3. GRID — falsifiable yes/no criteria
-4. TRIBUNAL — every criterion = PASS/FAIL
-5. AUTOMATION — agent to tribunal to correction loop until PASS
+4. **VALIDATION GATE** — Run the checks. Lint, build, type-check, tests, security scan. Output is the truth, not the agent's claim.
 
-### Anti-soap code (rule 27)
+5. **AUTOMATION** — Loop until all criteria are PASS. The human is removed from the correction loop.
 
-10-criterion grid before commit: length, explicit names, zero magic, SOLID/SRP, DRY, OWASP, testable, comments WHY only, scale-ready, error handling.
-
-### Local validation (rule 29)
-
-Tribunal local with pnpm install frozen-lockfile, lint, build, test no-file-parallelism, plus ruff + pytest if backend touched. Push without local validation = forbidden by Husky pre-push hook.
+The discipline is not about writing better prompts. It is about **building gates the AI cannot skip**.
 
 ---
 
-## Decisions deliberately out of scope
+## How to enforce — example rules
 
-The Codex made conscious choices to **not** include certain ambitious patterns:
+The Tolkerz codebase enforces 40+ explicit rules in `.claude/rules/`. A representative sample:
 
-- Kafka for cron jobs — overkill at current volume
-- ML scope inference — pure theater, no value over plain glob intersection
-- Real-time hooks dashboard — building a product inside the product
-- Heartbeat for synchro-work — passive TTL is sufficient
-- Cross-repo coordination — forced coupling rejected
+| Rule | What it does |
+|---|---|
+| Never delete a test to make CI pass — restore the broken function instead | Prevents the AI from "fixing" by removing accountability |
+| TypeScript mandatory for any new file in `src/` | Stops type-debt accumulation organically |
+| Soft delete only — never hard-delete user data | Audit-friendly, GDPR-aligned, recovery-ready |
+| User data uses RLS-scoped DB client; admin client requires staff verification | Defense-in-depth at the data layer |
+| Anti-soap code grid (10 falsifiable criteria) checked before every commit | AI tendency toward soap code (the new spaghetti) is countered at write-time |
+| Refactor in place — never create parallel implementations | Stops "lost day" incidents where the agent rebuilds next to existing code |
+| Branch + PR required — main is protected by hooks and server-side branch protection | The founder is the merge gate, not the agent |
+| Tech-debt and scale-debt tracked explicitly, with trigger conditions | Deferred decisions become visible, not invisible |
 
-Tracked as post-traction reactivation candidates.
+These rules are loaded into the agent context at every session start. The agent cannot operate without them.
+
+---
+
+## How to enforce — multi-agent coordination
+
+When multiple Claude sessions run in parallel (Claude Code, VS Code, Cowork), they can step on each other's work. The Codex includes a coordination primitive: **synchro-work**.
+
+It is a markdown journal in the git repo. Each agent claims a scope before starting, declares its work in progress, and releases the scope when the PR is merged.
+
+No broker. No external service. Just a file. Versioned in the same repo as the code.
+
+The result: parallel agents that compose without contaminating each other's branches, and a public log of who-did-what for auditability.
+
+---
+
+## What the Codex is not
+
+- It is not a replacement for engineering judgment. It is the discipline layer that lets a non-technical founder enforce engineering standards they didn't grow up with.
+- It is not a guarantee of correctness. It is a guarantee that errors are caught at gates rather than by users.
+- It is not opposed to speed. It is the only sustainable way to be fast: a single broken PR costs more than a hundred validated ones.
+- It is not generic. Each rule has a concrete origin in a real incident on a real product.
+
+---
+
+## How to adopt it
+
+1. **Fork it.** Take what fits your domain. The 5 criteria generalize. The 40 rules are Tolkerz-specific examples — write your own.
+
+2. **Forge your gates.** A criterion without a gate is a wish. A gate without a criterion is a checkbox. You need both.
+
+3. **Track your dette.** Every deferred decision goes into a registry with a trigger. Otherwise it disappears.
+
+4. **Keep the founder in the merge loop.** The agent ships to a branch. The founder merges. The branch protection enforces it server-side.
+
+5. **Write down your why.** The rules will outlive you. The why behind them must too.
 
 ---
 
 ## License
 
-CC BY 4.0 — free reuse with attribution.
+This document is published under **CC-BY-4.0**. Use it. Adapt it. Build on it. Cite the origin if you ship something that owes its discipline to it.
 
-## Author
+Public reference: [github.com/IvanTolkz/codex-operandi](https://github.com/IvanTolkz/codex-operandi)
 
-**Ivan Boole** — [@ivbconcept](https://github.com/ivbconcept)
-Forged on Tolkerz, February to May 2026.
+Forged on Tolkerz between February and May 2026 by Ivan Boole.
 
 ---
 
