@@ -23,22 +23,35 @@ function ensureDirs() {
 
 function parseArgs(argv) {
   const args = {};
+
   for (let i = 0; i < argv.length; i += 1) {
     const item = argv[i];
     if (!item.startsWith('--')) continue;
+
     const key = item.slice(2);
-    const next = argv[i + 1];
-    if (!next || next.startsWith('--')) {
-      args[key] = true;
-    } else if (args[key]) {
-      args[key] = Array.isArray(args[key]) ? [...args[key], next] : [args[key], next];
-      i += 1;
-    } else {
-      args[key] = next;
+    const values = [];
+
+    while (i + 1 < argv.length && !argv[i + 1].startsWith('--')) {
+      values.push(argv[i + 1]);
       i += 1;
     }
+
+    if (values.length === 0) {
+      args[key] = true;
+    } else if (args[key]) {
+      const previous = Array.isArray(args[key]) ? args[key] : [args[key]];
+      args[key] = [...previous, ...values];
+    } else {
+      args[key] = values.length === 1 ? values[0] : values;
+    }
   }
+
   return args;
+}
+
+function asArray(value) {
+  if (value === undefined || value === null || value === true) return [];
+  return Array.isArray(value) ? value : [value];
 }
 
 function slug(value) {
@@ -61,6 +74,13 @@ function readActiveClaims() {
       const fullPath = path.join(ACTIVE_DIR, file);
       return { file, fullPath, claim: JSON.parse(fs.readFileSync(fullPath, 'utf8')) };
     });
+}
+
+function readFilesFrom(filePath) {
+  return fs.readFileSync(filePath, 'utf8')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
 }
 
 function simpleGlobMatch(file, pattern) {
@@ -86,7 +106,7 @@ function cmdClaim(args) {
   assertRequired(args, ['agent', 'branch', 'scope', 'intent', 'track']);
   ensureDirs();
 
-  const include = Array.isArray(args.scope) ? args.scope : [args.scope];
+  const include = asArray(args.scope);
   const claim = {
     schema_version: 1,
     claim_id: crypto.randomUUID(),
@@ -128,8 +148,20 @@ function cmdStatus() {
 }
 
 function cmdCheckScope(args) {
-  assertRequired(args, ['branch', 'files']);
-  const files = Array.isArray(args.files) ? args.files : [args.files];
+  if (!args.branch) {
+    console.error('Missing required argument: --branch');
+    process.exit(2);
+  }
+
+  const directFiles = asArray(args.files);
+  const filesFrom = asArray(args['files-from']).flatMap(readFilesFrom);
+  const files = [...directFiles, ...filesFrom];
+
+  if (files.length === 0) {
+    console.error('Missing required argument: --files or --files-from');
+    process.exit(2);
+  }
+
   const active = readActiveClaims();
   const found = active.find(({ claim }) => claim.branch === args.branch);
 
@@ -182,7 +214,7 @@ function main() {
   if (cmd === 'check-scope') return cmdCheckScope(args);
   if (cmd === 'release') return cmdRelease(args);
 
-  console.log(`Watchtower example CLI\n\nUsage:\n  watchtower.example.js claim --agent <name> --branch <branch> --scope "docs/**" --intent "..." --track <fast|strict>\n  watchtower.example.js status\n  watchtower.example.js check-scope --branch <branch> --files <file> [--files <file>]\n  watchtower.example.js release --branch <branch> --pr <number>\n`);
+  console.log(`Watchtower example CLI\n\nUsage:\n  watchtower.example.js claim --agent <name> --branch <branch> --scope "docs/**" --intent "..." --track <fast|strict>\n  watchtower.example.js status\n  watchtower.example.js check-scope --branch <branch> --files <file> [more files...]\n  watchtower.example.js check-scope --branch <branch> --files-from changed-files.txt\n  watchtower.example.js release --branch <branch> --pr <number>\n`);
 }
 
 main();
