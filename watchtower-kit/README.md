@@ -101,6 +101,8 @@ to:
 
 Then edit it for your repo.
 
+Important: `policy.example.json` documents recommended policy boundaries. The minimal example CLI does not enforce every policy rule yet. Production adopters must wire policy enforcement into the CLI, CI, or both.
+
 ### 4. Try a claim
 
 ```bash
@@ -126,6 +128,14 @@ node watchtower-kit/scripts/watchtower.example.js check-scope \
   --files docs/README.md docs/guide.md
 ```
 
+For CI, prefer a newline-delimited file list:
+
+```bash
+node watchtower-kit/scripts/watchtower.example.js check-scope \
+  --branch agent/docs-agent \
+  --files-from changed-files.txt
+```
+
 ### 7. Release after merge
 
 ```bash
@@ -133,6 +143,8 @@ node watchtower-kit/scripts/watchtower.example.js release \
   --branch agent/docs-agent \
   --pr 123
 ```
+
+The example release workflow must open a release PR. It must not push the release artifact directly to `main`.
 
 ---
 
@@ -147,7 +159,8 @@ Minimum setup:
 - require CI checks;
 - forbid direct pushes to protected branches;
 - keep the human maintainer as merge gate;
-- release claims only after merge.
+- release claims only after merge;
+- land release artifacts through a PR, not a direct push to `main`.
 
 Local scripts are useful. CI and branch protection are the wall.
 
@@ -163,7 +176,8 @@ Do:
 - keep state writes auditable;
 - make failures loud;
 - prevent agents from silently widening their own scope;
-- review all workflow permissions before enabling automation.
+- review all workflow permissions before enabling automation;
+- create a release PR for Watchtower state changes instead of pushing to `main`.
 
 Do not:
 
@@ -171,6 +185,7 @@ Do not:
 - publish internal incident logs;
 - use real claim IDs in examples;
 - let agents merge their own work into `main`;
+- let automation push directly to protected branches;
 - treat Fast Track as a bypass;
 - rely only on local hooks.
 
@@ -190,9 +205,9 @@ Claims exist in `.watchtower/active/`. Agents are visible. Status can be queried
 
 CI compares PR changed files against the claim. Scope drift becomes visible.
 
-### Level 3 — Release automation
+### Level 3 — Release automation through PR
 
-Claims move from active to completed after merge.
+Claims move from active to completed after merge, and the release artifact lands through a dedicated release PR.
 
 ### Level 4 — State branch
 
