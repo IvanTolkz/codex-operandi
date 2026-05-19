@@ -12,7 +12,7 @@ permissions:
 jobs:
   release-watchtower-claim:
     name: Release Watchtower Claim
-    if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true && !startsWith(github.event.pull_request.head.ref, 'watchtower/release-pr-')
     runs-on: ubuntu-latest
 
     steps:
@@ -33,6 +33,7 @@ jobs:
         run: |
           # Example only. Review workflow permissions before enabling automation.
           # This workflow must never push directly to the protected default branch.
+          # It also skips release PR branches to avoid recursive release PR creation.
           node watchtower-kit/scripts/watchtower.example.js release \
             --branch "${{ github.event.pull_request.head.ref }}" \
             --pr "${{ github.event.pull_request.number }}"
