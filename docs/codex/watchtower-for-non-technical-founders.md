@@ -25,7 +25,7 @@ At the simplest level, Watchtower does for code what a reservation system does f
 
 Before modifying files, an agent must officially declare:
 
-> “These files are mine for this task, for this estimated amount of time.”
+> “These files are mine for this task, within this boundary, for this expected window when useful.”
 
 In the analogy:
 
@@ -95,7 +95,7 @@ agent: signup-flow
 scope: src/auth/**, src/signup/**
 intent: improve signup flow and auth handoff
 branch: agent/signup-flow
-estimated window: 2 hours
+expected window: about 2 hours
 ```
 
 Agent B tries to claim:
@@ -105,7 +105,7 @@ agent: auth-bugfix
 scope: src/auth/**
 intent: fix token refresh bug
 branch: agent/auth-bugfix
-estimated window: 45 minutes
+expected window: about 45 minutes
 ```
 
 Watchtower detects the overlap.
@@ -131,7 +131,7 @@ claim before code
 
 This is the heart of Watchtower.
 
-Before an agent changes files, it must declare its work. If the agent cannot explain the scope, intent, branch, and expected work window, it is not ready to edit.
+Before an agent changes files, it must declare its work. If the agent cannot explain the scope, intent, branch, and expected boundary, it is not ready to edit.
 
 ---
 
@@ -165,9 +165,7 @@ After merge, the claim is released so other agents can work in that area again.
 
 ## Fast Track vs Strict Track
 
-Watchtower should not make every tiny solo task feel like airport security.
-
-It needs two tracks.
+The mature version of Watchtower should support two tracks.
 
 ### Fast Track
 
@@ -240,7 +238,7 @@ Before letting an agent work, ask:
 What files?
 Why?
 Which branch?
-How long?
+How long, if the estimate is useful?
 Is another agent already there?
 Who merges?
 What proves the work is safe?
