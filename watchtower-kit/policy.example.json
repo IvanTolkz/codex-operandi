@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "repository": "example/repository",
+  "default_track": "strict",
+  "fast_track": {
+    "enabled": true,
+    "max_files_changed": 5,
+    "allowed_globs": [
+      "docs/**",
+      "README.md"
+    ],
+    "forbidden_globs": [
+      ".github/**",
+      ".watchtower/**",
+      "scripts/**",
+      "package.json",
+      "package-lock.json",
+      "pnpm-lock.yaml",
+      "yarn.lock"
+    ]
+  },
+  "strict_track_required_for": [
+    ".github/**",
+    ".watchtower/**",
+    "scripts/**",
+    "src/auth/**",
+    "src/security/**",
+    "src/payments/**",
+    "migrations/**",
+    "package.json",
+    "package-lock.json",
+    "pnpm-lock.yaml",
+    "yarn.lock"
+  ],
+  "protected_branches": [
+    "main"
+  ],
+  "release": {
+    "only_after_merge": true,
+    "archive_completed_claims": true
+  },
+  "security_notes": [
+    "Review workflow permissions before enabling automation.",
+    "Never store production credentials in Watchtower claims.",
+    "Never allow agents to merge their own PRs into protected branches."
+  ]
+}

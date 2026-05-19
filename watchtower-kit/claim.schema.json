@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/watchtower/claim.schema.json",
+  "title": "Watchtower Claim",
+  "description": "Generic schema for a Watchtower claim. Adapt this schema before production use.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "claim_id",
+    "agent",
+    "branch",
+    "track",
+    "scope",
+    "intent",
+    "status",
+    "claimed_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "claim_id": {
+      "type": "string",
+      "description": "Unique claim identifier. Use a generated UUID or equivalent unique value. Never reuse a claim_id."
+    },
+    "agent": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable agent name."
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Dedicated branch used by this agent for the work."
+    },
+    "track": {
+      "type": "string",
+      "enum": ["fast", "strict"],
+      "description": "Fast Track is low-friction governance for safe solo work. Strict Track is full governance for parallel, sensitive, broad, or overlapping work."
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["include"],
+      "properties": {
+        "include": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Allowed file globs or paths."
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Optional excluded file globs or paths."
+        }
+      }
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Plain-language explanation of why the agent needs this scope."
+    },
+    "expected_window": {
+      "type": ["string", "null"],
+      "description": "Optional expected work window, for example '45 minutes' or '2 hours'."
+    },
+    "delegates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Optional read-only or same-scope helper agents."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["claimed", "released", "cancelled"]
+    },
+    "pr": {
+      "type": ["integer", "null"],
+      "description": "Pull request number once available."
+    },
+    "claimed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "released_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "release_reason": {
+      "type": ["string", "null"]
+    }
+  }
+}
