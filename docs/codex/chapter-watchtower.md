@@ -119,9 +119,9 @@ Before changing files, the agent declares:
 - branch name;
 - scope of files or directories;
 - intent;
-- estimated work window.
+- expected or optional work window when useful.
 
-The claim is a contract. It answers: who is working, where, why, and for how long.
+The claim is a contract. It answers: who is working, where, why, and under which boundary.
 
 ### 2. Bootstrap
 
@@ -153,7 +153,7 @@ The claim is released after merge. Releasing before merge reopens the scope whil
 
 ## Fast Track and Strict Track
 
-Watchtower should support two tracks.
+The mature version of Watchtower should support two tracks.
 
 ### Fast Track
 
