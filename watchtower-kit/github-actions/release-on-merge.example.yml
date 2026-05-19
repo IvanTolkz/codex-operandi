@@ -1,0 +1,42 @@
+name: Watchtower Release On Merge Example
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  release-watchtower-claim:
+    name: Release Watchtower Claim
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Release claim
+        shell: bash
+        run: |
+          # Example only. Review permissions before enabling write automation.
+          node watchtower-kit/scripts/watchtower.example.js release \
+            --branch "${{ github.event.pull_request.head.ref }}" \
+            --pr "${{ github.event.pull_request.number }}"
+
+      - name: Commit release artifact
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No Watchtower release changes to commit."
+            exit 0
+          fi
+
+          git config user.name "watchtower-example-bot"
+          git config user.email "watchtower-example-bot@example.invalid"
+          git add .watchtower
+          git commit -m "chore(watchtower): release claim for PR #${{ github.event.pull_request.number }}"
+          git push
