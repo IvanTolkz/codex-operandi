@@ -107,15 +107,24 @@ These rules are loaded into the agent context at every session start. The agent 
 
 ---
 
-## How to enforce — multi-agent coordination
+## How to enforce — Watchtower
 
-When multiple Claude sessions run in parallel (Claude Code, VS Code, Cowork), they can step on each other's work. The Codex includes a coordination primitive: **synchro-work**.
+When multiple AI coding agents run in parallel, discipline must move from prompt-level intention to repo-level governance.
 
-It is a markdown journal in the git repo. Each agent claims a scope before starting, declares its work in progress, and releases the scope when the PR is merged.
+**Watchtower** is the Codex Operandi discipline for coordinating AI coding agents safely inside the same repository. It was originally drafted as **Control Tower**, then renamed Watchtower after the reference implementation was proven on Tolkerz.
 
-No broker. No external service. Just a file. Versioned in the same repo as the code.
+Watchtower is not just a philosophy. It is a repo-level operating framework built around a simple chain:
 
-The result: parallel agents that compose without contaminating each other's branches, and a public log of who-did-what for auditability.
+1. **Claim before code** — an agent declares scope, intent, branch, and estimated work window before editing files.
+2. **Bootstrap before work** — permission to work is established before the real implementation PR.
+3. **Scope enforcement** — the pull request must stay inside the claimed files.
+4. **Founder merge gate** — the agent never merges itself into `main`.
+5. **Server-side release** — the claim is released only after merge, not before.
+
+The easiest analogy is a meeting-room booking system: nobody should walk into the same room at the same time without knowing who reserved it and why. But Watchtower goes further than reservation. It is also the audit trail, the scope contract, the merge discipline, and the release protocol that keeps parallel AI work safe.
+
+Read the chapter: [`docs/codex/chapter-watchtower.md`](docs/codex/chapter-watchtower.md)  
+Founder-friendly guide: [`docs/codex/watchtower-for-non-technical-founders.md`](docs/codex/watchtower-for-non-technical-founders.md)
 
 ---
 
