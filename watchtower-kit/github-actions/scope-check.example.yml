@@ -34,4 +34,4 @@ jobs:
           # Example only. Adapt the branch/claim lookup to your repository.
           node watchtower-kit/scripts/watchtower.example.js check-scope \
             --branch "${{ github.head_ref }}" \
-            --files $(cat changed-files.txt)
+            --files-from changed-files.txt
