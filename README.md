@@ -115,13 +115,13 @@ When multiple AI coding agents run in parallel, discipline must move from prompt
 
 Watchtower is not just a philosophy. It is a repo-level operating framework built around a simple chain:
 
-1. **Claim before code** — an agent declares scope, intent, branch, and estimated work window before editing files.
+1. **Claim before code** — before editing, an agent declares scope, intent, branch, and an expected work window when useful.
 2. **Bootstrap before work** — permission to work is established before the real implementation PR.
 3. **Scope enforcement** — the pull request must stay inside the claimed files.
 4. **Founder merge gate** — the agent never merges itself into `main`.
 5. **Server-side release** — the claim is released only after merge, not before.
 
-The easiest analogy is a meeting-room booking system: nobody should walk into the same room at the same time without knowing who reserved it and why. But Watchtower goes further than reservation. It is also the audit trail, the scope contract, the merge discipline, and the release protocol that keeps parallel AI work safe.
+The easiest analogy is a meeting-room booking system: nobody should walk into the same room at the same time without knowing who reserved it and why. But that analogy is only the entry point. Watchtower also provides the audit trail, the scope contract, the merge discipline, and the release protocol that keep parallel AI work safe.
 
 Read the chapter: [`docs/codex/chapter-watchtower.md`](docs/codex/chapter-watchtower.md)  
 Founder-friendly guide: [`docs/codex/watchtower-for-non-technical-founders.md`](docs/codex/watchtower-for-non-technical-founders.md)
