@@ -70,7 +70,7 @@
       "description": "Plain-language explanation of why the agent needs this scope."
     },
     "expected_window": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "Optional expected work window, for example '45 minutes' or '2 hours'."
     },
     "delegates": {
